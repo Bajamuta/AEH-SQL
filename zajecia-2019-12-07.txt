@@ -1,0 +1,33 @@
+Ćwiczenie 1. Funkcje agregujące
+1) Wyświetl średnią przyznanych stypendiów. Jako nazwę kolumny przyjmij „średnia stypendiów”,
+
+SELECT AVG(kwota_stypendium) AS "srednia stypendium" FROM przyznane_stypendia
+
+2) Wyświetl liczbę studentów, którzy otrzymali stypendium socjalne,
+
+SELECT COUNT(*) FROM studenci INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta INNER JOIN rodzaje_stypendium ON przyznane_stypendia.id_stypendium = rodzaje_stypendiu.id_rodzaju_stypendium
+
+3) Wyświetl w dwóch kolumnach odpowiednio minimalne i maksymalne przyznane stypendium.
+Nazwij kolumny jako „minimalne stypendium” oraz „maksymalne stypendium”.
+
+SELECT MIN(kwota_stypendium) AS "minimalne stypendium", MAX(kwota_stypendium) AS "maksymalne stypendium" FROM przyznane_stypendia
+
+Ćwiczenie 2. Funkcje agregujące i grupowanie danych
+4) Wyświetl nazwę wydziału i liczbę studentów studiujących na każdym z wydziałów,
+
+SELECT wydzialy.nazwa_wydzialu, COUNT(studenci.id_studenta) AS "liczba studentów" FROM studenci INNER JOIN wydzialy ON studenci.id_wydzialu = wydzialy.id_wydzialu GROUP BY wydzialy.nazwa_wydzialu
+
+5) Wyświetl posortowaną listę średniej kwoty przyznanych stypendiów dla studentów, których
+średnia kwota stypendiów była niższa niż 350 zł,
+
+SELECT studenci.id_studenta, AVG(kwota_stypendium) AS "średnia kwota stypendium" FROM studenci INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta GROUP BY studenci.id_studenta HAVING AVG(kwota_stypendium) < 350 ORDER BY AVG(kwota_stypendium) DESC
+
+6) Wyświetl nazwę stypendium i liczbę przyznanych stypendiów według ich rodzajów tylko dla tych
+rodzajów, dla których liczba stypendiów była większa lub równa 3,
+
+SELECT rodzaje_stypendium.nazwa_stypendium, COUNT(przyznane_stypendia.id_studenta) AS "liczba stypendiów" FROM studenci INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta INNER JOIN rodzaje_stypendium ON przyznane_stypendia.id_stypendium = rodzaje_stypendium.id_rodzaj GROUP BY rodzaje_stypendium.nazwa_stypendium HAVING COUNT(przyznane_stypendia.id_studenta) >= 3
+
+7) Wyświetl liczbę studentów studiujących na Wydziale Humanistycznym i Wydziale Nauk Ścisłych,
+jeżeli liczba studentów na tych wydziałach wynosiła co najmniej 2 osoby
+
+SELECT wydzialy.nazwa_wydzialu, COUNT(id_studenta) AS "liczba studentów" FROM studenci INNER JOIN wydzialy ON studenci.id_wydzialu = wydzialy.id_wydzialu WHERE wydzialy.nazwa_wydzialu LIKE 'Humanistyczny' OR wydzialy.nazwa_wydzialu LIKE 'Nauk ścisłych' GROUP BY wydzialy.nazwa_wydzialu HAVING COUNT(id_studenta) >= 2

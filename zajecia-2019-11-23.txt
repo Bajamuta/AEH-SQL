@@ -1,0 +1,84 @@
+1) Wyświetl imię, nazwisko, nazwę kierunku i nazwę wydziału, na którym studiuje dany student,
+
+SELECT Studenci.imie, Studenci.nazwisko, Wydzialy.nazwa_wydzialu, Kierunki.nazwa_kierunku FROM Studenci INNER JOIN Wydzialy ON Studenci.ID_WYDZIALU = Wydzialy.ID_WYDZIALU INNER JOIN Kierunki ON Studenci.ID_KIERUNKU = Kierunki.ID_KIERUNKU
+
+2) Wyświetl imię, nazwisko, nazwy przyznanych stypendiów i ich kwoty, a także kwotę stypendium dla każdego ze studentów,
+
+SELECT Studenci.imie, Studenci.nazwisko, Przyznane_stypendia.KWOTA_STYPENDIUM, Rodzaje_stypendium.NAZWA_STYPENDIUM, Rodzaje_stypendium.MAKSYMALNA_WYSOKOSC FROM Studenci INNER JOIN Przyznane_stypendia ON Przyznane_stypendia.ID_STUDENTA = Studenci.ID_STUDENTA INNER JOIN Rodzaje_stypendium ON Przyznane_stypendia.ID_STYPENDIUM = Rodzaje_stypendium.ID_RODZAJ 
+
+3) Wyświetl datę urodzenia, nazwę kierunku, nazwa_wydzialu tylko dla tych studentów, którzy
+studiują na wydziale nauk ścisłych,
+
+SELECT Studenci.imie, Studenci.nazwisko, Wydzialy.nazwa_wydzialu, Kierunki.nazwa_kierunku FROM Studenci INNER JOIN Kierunki ON Studenci.ID_KIERUNKU = Kierunki.ID_KIERUNKU INNER JOIN Wydzialy ON Studenci.ID_WYDZIALU = Wydzialy.ID_WYDZIALU WHERE Wydzialy.NAZWA_WYDZIALU LIKE 'Nauk ścisłych'
+
+4) Wyświetl nazwisko i nazwę stypendium, które otrzymał każdy ze studentów. Posortuj według
+nazwiska studenta,
+
+SELECT Studenci.nazwisko, Rodzaje_stypendium.nazwa_stypendium FROM Studenci INNER JOIN Przyznane_stypendia ON Przyznane_stypendia.ID_STUDENTA = Studenci.ID_STUDENTA INNER JOIN Rodzaje_stypendium ON Przyznane_stypendia.ID_STYPENDIUM = Rodzaje_stypendium.ID_RODZAJ ORDER BY Studenci.nazwisko
+
+5) Wyświetl imię, nazwę kierunku i wydziału tylko tych studentów, których imię to ‘Anna’,
+
+SELECT Studenci.imie, Wydzialy.nazwa_wydzialu, Kierunki.nazwa_kierunku FROM Studenci INNER JOIN Wydzialy ON Studenci.id_wydzialu = Wydzialy.id_wydzialu INNER JOIN Kierunki ON Studenci.id_kierunku = Kierunki.id_kierunku WHERE Studenci.imie LIKE 'Anna'
+
+6) Wyświetl rok studiów i kwotę przyznanego stypendium tych studentów, którzy studiują na drugim roku.
+
+SELECT Studenci.rok_studiow, Przyznane_stypendia.kwota_stypendium FROM Studenci INNER JOIN Przyznane_stypendia ON Studenci.id_studenta = Przyznane_stypendia.id_studenta WHERE Studenci.rok_studiow = 2
+
+7) Wyświetl wysokość przyznanego stypendium i nazwę stypendium tylko stypendium naukowego i
+zapomogi.
+
+SELECT Rodzaje_stypendium.nazwa_stypendium, Przyznane_stypendia.kwota_stypendium FROM Przyznane_stypendia INNER JOIN Rodzaje_stypendium ON Przyznane_stypendia.id_stypendium = Rodzaje_stypendium.id_rodzaj WHERE Rodzaje_stypendium.nazwa_stypendium LIKE 'Zapomoga' OR Rodzaje_stypendium.nazwa_stypendium LIKE 'Naukowe'
+
+8) Wyświetl nazwisko, datę urodzenia i nazwę wydziału, wysokość stypendium tych studentów,
+którzy otrzymali dowolne stypendium wyższe niż 300 zł.
+
+SELECT Studenci.nazwisko, Studenci.data_urodzenia, Wydzialy.nazwa_wydzialu, Rodzaje_stypendium.nazwa_stypendium, Przyznane_stypendia.kwota_stypendium FROM Studenci INNER JOIN Przyznane_stypendia ON Przyznane_stypendia.id_studenta = Studenci.id_studenta INNER JOIN Rodzaje_stypendium ON Przyznane_stypendia.id_stypendium = Rodzaje_stypendium.id_rodzaj INNER JOIN Wydzialy ON Studenci.id_wydzialu = Wydzialy.id_wydzialu WHERE Przyznane_stypendia.kwota_stypendium >= 300
+
+9) Wyświetl imię nazwisko, nazwę kierunku i nazwę wydziału studentów Wydziału
+Humanistycznego
+
+SELECT imie, nazwisko, nazwa_wydzialu, nazwa_kierunku FROM Studenci INNER JOIN Wydzialy ON Studenci.id_wydzialu = Wydzialy.id_wydzialu INNER JOIN Kierunki ON Studenci.id_kierunku = Kierunki.id_kierunku WHERE Wydzialy.nazwa_wydzialu LIKE 'Humanistyczny'
+
+10) Wyświetl informacje o studentach oraz kwoty i rodzaje przyznanych stypendiów
+
+SELECT imie, nazwisko, data_urodzenia, ocena, nazwa_stypendium, kwota_stypendium FROM Studenci INNER JOIN Przyznane_stypendia ON Przyznane_stypendia.id_studenta = Studenci.id_studenta INNER JOIN Rodzaje_stypendium ON Przyznane_stypendia.id_stypendium = Rodzaje_stypendium.id_rodzaj
+
+11) Wyświetl dane o studentach, którzy otrzymali i nie otrzymali stypendiów wraz z rodzajem oraz kwotą stypendium
+
+SELECT imie, nazwisko, nazwa_stypendium, kwota_stypendium FROM Studenci LEFT JOIN Przyznane_stypendia ON Przyznane_stypendia.id_studenta = Studenci.id_studenta LEFT JOIN Rodzaje_stypendium ON Przyznane_stypendia.id_stypendium = Rodzaje_stypendium.id_rodzaj
+
+12) Wyświetl informacje o studentach, którzy nie otrzymali stypendium
+
+SELECT imie, nazwisko, nazwa_stypendium, kwota_stypendium FROM Studenci LEFT JOIN Przyznane_stypendia ON Przyznane_stypendia.id_studenta = Studenci.id_studenta LEFT JOIN Rodzaje_stypendium ON Przyznane_stypendia.id_stypendium = Rodzaje_stypendium.id_rodzaj WHERE Przyznane_stypendia.id_studenta IS NULL
+
+13) Wyświetl imię, nazwę kierunku i wydziału tylko tych studentów, których imię to ‘Tomasz’,
+
+SELECT imie, nazwisko, nazwa_wydzialu, nazwa_kierunku FROM Studenci INNER JOIN Kierunki ON Studenci.id_kierunku = Kierunki.id_kierunku INNER JOIN Wydzialy ON Studenci.id_wydzialu = Wydzialy.id_wydzialu WHERE imie LIKE 'Tomasz'
+
+14) Wyświetl rok studiów i kwotę przyznanego stypendium tych studentów, którzy studiują na
+pierwszym roku.
+
+SELECT rok_studiow, kwota_stypendium FROM Przyznane_stypendia INNER JOIN Studenci ON Przyznane_stypendia.id_studenta = Studenci.id_studenta WHERE rok_studiow = 1
+
+15) Wyświetl nazwisko, datę urodzenia i nazwę wydziału, wysokość stypendium tych studentów,
+którzy otrzymali dowolne stypendium wyższe niż 500 zł.
+
+SELECT nazwisko, data_urodzenia, nazwa_wydzialu, kwota_stypendium FROM Studenci INNER JOIN Wydzialy ON Studenci.id_wydzialu = Wydzialy.id_wydzialu  INNER JOIN Przyznane_stypendia ON Przyznane_stypendia.id_studenta = Studenci.id_studenta WHERE kwota_stypendium > 500
+
+
+
+16) Wyświetl listę klientów, którzy dokonali zamówień wraz z informacją o dacie zamówienia.
+
+SELECT imie, nazwisko, data_zamowienia FROM klienci INNER JOIN zamowienia ON zamowienia.id_klienta = klienci.id_klienta
+
+17) Wyświetl listę klientów, którzy dokonali i nie dokonali zwrotów. 
+
+SELECT imie, nazwisko FROM klienci LEFT JOIN zamowienia ON zamowienia.id_klienta = klienci.id_klienta LEFT JOIN zwroty ON zwroty.id_zamowienia = zamowienia.id_zamowienia
+
+18) Wyświetl imię i nazwisko klienta oraz nazwę i ilość zamówionego towaru.
+
+SELECT Klienci.Imie, Klienci.Nazwisko, Towary.Nazwa, Pozycje.Ilosc FROM Klienci INNER JOIN Faktury ON Faktury.Id_klienta = Klienci.Id_klienta INNER JOIN Pozycje ON Pozycje.Id_faktury = Faktury.Id_faktury INNER JOIN Towary ON Pozycje.Id_towaru = Towary.Id_towaru
+
+19) Wyświetl listę klientów, którzy nie złożyli zamówienia. 
+
+SELECT imie, nazwisko FROM Faktury LEFT JOIN Klienci ON Faktury.Id_klienta = Klienci.Id_klienta WHERE Faktury.Id_klienta IS NULL

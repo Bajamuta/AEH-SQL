@@ -1,0 +1,79 @@
+ĆWICZENIE 2
+
+1. Wyświetl wszystkie dane z tabeli kierunki,
+
+	SELECT * FROM KIERUNKI
+
+2. Wyświetl tylko nazwy wydziału z tabeli wydzialy,
+
+	SELECT NAZWA_WYDZIALU FROM WYDZIALY
+
+3. Wyświetl studentów o id_studenta mniejsze lub równie 12,
+
+	SELECT * FROM STUDENCI WHERE ID_STUDENTA <= 12
+
+4. Wyświetl studentów których imię rozpoczyna się od litery A,
+
+	SELECT * FROM STUDENCI WHERE IMIE LIKE 'A%'
+
+5. Wyświetl tylko nazwy kierunków, których druga litera to A,
+
+	SELECT * FROM KIERUNKI WHERE NAZWA_KIERUNKU LIKE '_a%'
+
+6. Wyświetl kwoty stypendium z tabeli przyznane_stypendia, których wartości są z zakresu od 100 do 150,
+
+	SELECT * FROM PRZYZNANE_STYPENDIA WHERE KWOTA_STYPENDIUM >=100 AND KWOTA_STYPENDIUM <=150
+
+7. Wyświetl imię, nazwisko i datę urodzenia tych studentów, których nazwiska nie kończą się
+ciągiem ‘ski’,
+
+	SELECT IMIE, NAZWISKO, DATA_URODZENIA FROM STUDENCI WHERE NAZWISKO NOT LIKE '%ski'
+
+8. Wyświetl studentów, którzy studiują na wydziale humanistycznym,
+
+	SELECT * FROM STUDENCI FULL OUTER JOIN WYDZIALY ON STUDENCI.ID_WYDZIALU =  WYDZIALY.ID_WYDZIALU WHERE WYDZIALY.NAZWA_WYDZIALU = 'Humanistyczny'
+
+9. Wyświetl posortowaną listę studentów według daty urodzenia.
+
+	SELECT * FROM STUDENCI ORDER BY DATA_URODZENIA ASC
+
+10. Wyświetl nazwy kierunków w porządku malejącym.
+
+	SELECT NAZWA_KIERUNKU FROM KIERUNKI ORDER BY NAZWA_KIERUNKU DESC
+
+11. Wyświetl tylko 5 pierwszych imion studentów.
+
+	SELECT IMIE FROM STUDENCI WHERE ID_STUDENTA <=5
+
+
+
+Ćwiczenie 3. Zapytania z użyciem operatorów logicznych
+
+12. Wyświetl studentów, którzy studiują na wydziale humanistycznym na kierunku pedagogika,
+
+	SELECT * FROM STUDENCI FULL OUTER JOIN WYDZIALY ON STUDENCI.ID_WYDZIALU =  WYDZIALY.ID_WYDZIALU FULL OUTER JOIN KIERUNKI ON STUDENCI.ID_KIERUNKU = KIERUNKI.ID_KIERUNKU WHERE WYDZIALY.NAZWA_WYDZIALU = 'Humanistyczny' AND KIERUNKI.NAZWA_KIERUNKU = 'Pedagogika'
+
+13. Wyświetl studentów, którzy urodzili się po 20 maja 1985 r. i studiują na wydziale nauk ścisłych,
+
+	SELECT * FROM STUDENCI FULL OUTER JOIN WYDZIALY ON STUDENCI.ID_WYDZIALU =  WYDZIALY.ID_WYDZIALU WHERE WYDZIALY.NAZWA_WYDZIALU = 'Nauk ścisłych' AND STUDENCI.DATA_URODZENIA > '1985-05-20'
+
+
+14. Wyświetl tylko te kwoty stypendium z tabeli przyznane_stypendia, które są niższe niż 200 zł i są stypendiami socjalnymi,
+
+	SELECT KWOTA_STYPENDIUM FROM PRZYZNANE_STYPENDIA FULL JOIN RODZAJE_STYPENDIUM ON PRZYZNANE_STYPENDIA.ID_STYPENDIUM = RODZAJE_STYPENDIUM.ID_RODZAJ WHERE RODZAJE_STYPENDIUM.NAZWA_STYPENDIUM = 'Socjalne' AND PRZYZNANE_STYPENDIA.KWOTA_STYPENDIUM <=200
+
+15. Wyświetl nazwy kierunków, których pierwszą literą jest P lub litera I,
+
+	SELECT * FROM KIERUNKI WHERE NAZWA_KIERUNKU LIKE 'P%' OR NAZWA_KIERUNKU LIKE 'I%'
+
+16. Wyświetl daty urodzeń studentów, którzy urodzili się w roku 1985 lub po roku 1990,
+
+	SELECT DATA_URODZENIA FROM STUDENCI WHERE DATA_URODZENIA BETWEEN '1985-01-01' AND '1985-12-31' OR DATA_URODZENIA > '1990-01-01'
+
+17. Wyświetl studentów, którzy urodzili się przed rokiem 1970 i nie mają pierwszej litery nazwiska na literę M
+
+	SELECT * FROM STUDENCI WHERE DATA_URODZENIA < '1990-01-01' AND NAZWISKO NOT LIKE 'M%'
+
+18. Wyświetl tylko te nazwy kierunków, które w nazwie nie posiadają ciągu ‘mat’.
+
+	SELECT NAZWA_KIERUNKU FROM KIERUNKI WHERE NAZWA_KIERUNKU NOT LIKE '%mat%'
