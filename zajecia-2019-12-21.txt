@@ -1,0 +1,86 @@
+1. Zmień wartość maksymalnej wysokości stypendium socjalnego (tabela rodzaje_stypendium) na
+1100 zł.
+
+UPDATE rodzaje_stypendium SET maksymalna_wysokosc = 1100 WHERE Nazwa_stypendium LIKE 'Socjalne'
+
+2. Zmień nazwę stypendium naukowego (tabela rodzaje_stypendium) na „rektora”.
+
+UPDATE rodzaje_stypendium SET nazwa_stypendium = 'Rektora' WHERE nazwa_stypendium LIKE 'Naukowe'
+
+3. Zmień rok studiów na wartość 1, dla wszystkich studentów studiujących dietetykę.
+
+UPDATE Studenci SET rok_studiow = 1 WHERE id_kierunku = (SELECT id_kierunku FROM kierunki WHERE nazwa_kierunku LIKE 'Dietetyka')
+
+4. Usuń studenta, który posiada pole id_studenta o wartości 10,
+
+DELETE FROM przyznane_stypendia WHERE id_studenta = 10;
+DELETE FROM studenci WHERE id_studenta = 10
+
+5. Usuń wszystkie przyznane stypendia dla studentki Joanny Majdan.
+
+DELETE FROM przyznane_stypendia WHERE id_studenta = (SELECT id_studenta FROM studenci WHERE imie LIKE 'Joanna' AND nazwisko LIKE 'Majdan')
+
+*6. Wyświetl imię i nazwisko studentów, którzy nie otrzymali stypendium.
+
+SELECT imie, nazwisko, id_przyznanie FROM studenci LEFT JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta WHERE id_przyznanie IS NULL
+
+7. Wyświetl nazwę kierunku i liczbę (ilość) przyznanych stypendiów na każdym kierunku. Gdy nie
+przyznano żadnego stypendium, wynik powinien zwrócić wartość NULL.
+
+SELECT nazwa_kierunku, COUNT(id_przyznanie) AS liczba_stypendiow FROM studenci INNER JOIN kierunki ON studenci.id_kierunku = kierunki.id_kierunku LEFT JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta GROUP BY nazwa_kierunku
+
+8. Utwórz tabelę studenci_temp zawierającą id_studenta, imie, nazwisko, nazwa_kierunku,
+kwota_stypendium. Następnie umieść w niej odpowiednie dane z tabeli studenci, kierunki i
+przyznane stypendia
+
+CREATE TABLE studenci_temp (id_studenta INT, imie VARCHAR2(30), nazwisko VARCHAR2(60), nazwa_kierunku VARCHAR2(30), kwota_stypendium INT)
+INSERT INTO studenci_temp (id_studenta, imie, nazwisko, nazwa_kierunku, kwota_stypendium)
+VALUES
+
+*9. Wyświetl liczbę studentów studiujących na każdym z wydziałów, dla których liczba studentów
+wynosi co najmniej 4 osoby.
+
+SELECT nazwa_wydzialu, COUNT(id_studenta) FROM studenci INNER JOIN wydzialy ON studenci.id_wydzialu = wydzialy.id_wydzialu GROUP BY nazwa_wydzialu HAVING COUNT(id_studenta) >= 4
+
+
+10. Wyświetl imię, nazwisko, nazwę wydziału oraz kwotę stypendium studenta, który otrzymał
+największe stypendium
+
+SELECT imie, nazwisko, nazwa_wydzialu, kwota_stypendium FROM studenci INNER JOIN wydzialy ON studenci.id_wydzialu = wydzialy.id_wydzialu INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta WHERE kwota_stypendium = (SELECT MAX(kwota_stypendium) FROM przyznane_stypendia)
+
+*11. Wyświetl nazwiska studentów, którzy otrzymali i nie otrzymali stypendium wraz z informacją o
+liczbie, (ilości przyznanych stypendiów), jeżeli ilość przyznanych stypendiów jest mniejsza od 3.
+
+SELECT nazwisko, count(id_przyznanie) FROM studenci LEFT JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta GROUP BY nazwisko HAVING count(id_przyznanie) < 3 ORDER BY count(id_przyznanie)
+
+*12. Wyświetl imie, nazwisko oraz wysokość stypendium tych studentów, których kwota przyznanego
+stypendium była większa niż średnia wartość przyznanych stypendiów.
+
+SELECT imie, nazwisko, kwota_stypendium FROM studenci INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta WHERE kwota_stypendium > (SELECT AVG(kwota_stypendium) FROM przyznane_stypendia)
+
+*13. Wyświetl sumę przyznanych stypendiów według ich rodzajów tylko dla studentów studiujących na
+kierunku informatyka, pedagogika lub matematyka oraz których suma tego stypendium była
+mniejsza niż 2000. Posortuj wyniki malejąco
+
+SELECT nazwa_stypendium, SUM(przyznane_stypendia.kwota_stypendium) FROM przyznane_stypendia INNER JOIN rodzaje_stypendium ON przyznane_stypendia.id_stypendium = rodzaje_stypendium.id_rodzaj GROUP BY nazwa_stypendium 
+HAVING nazwa_stypendium IN 
+(SELECT nazwa_stypendium FROM rodzaje_stypendium INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_stypendium = rodzaje_stypendium.id_rodzaj
+INNER JOIN studenci ON przyznane_stypendia.id_studenta = studenci.id_studenta INNER JOIN kierunki ON studenci.id_kierunku = kierunki.id_kierunku WHERE nazwa_kierunku IN('Informatyka', 'Pedagogika', 'Matematyka')
+ GROUP BY nazwa_stypendium) AND SUM(przyznane_stypendia.kwota_stypendium)<2000 ORDER BY SUM(przyznane_stypendia.kwota_stypendium) DESC
+
+14. Wyświetl imię, nazwisko, nazwę wydziału i kwotę stypendium studenta, który otrzymał najniższe
+stypendium i studiuje na wydziale Nauk humanistycznych
+
+//SELECT imie, nazwisko, nazwa_wydzialu, kwota_stypendium FROM studenci INNER JOIN wydzialy ON studenci.id_wydzialu = wydzialy.id_wydzialu INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta 
+WHERE studenci.id_wydzialu LIKE (SELECT id_wydzialu FROM wydzialy WHERE nazwa_wydzialu LIKE 'Humanistyczny')
+
+//SELECT imie, nazwisko, nazwa_wydzialu, kwota_stypendium FROM studenci INNER JOIN wydzialy ON studenci.id_wydzialu = wydzialy.id_wydzialu INNER JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta 
+WHERE studenci.id_wydzialu LIKE (SELECT id_wydzialu FROM wydzialy WHERE nazwa_wydzialu LIKE 'Humanistyczny') 
+AND kwota_stypendium = (SELECT MIN(kwota_stypendium) FROM przyznane_stypendia INNER JOIN studenci ON przyznane_stypendia.id_studenta = studenci.id_studenta)
+
+
+*15. Wyświetl nazwiska studentów, którzy otrzymali i nie otrzymali stypendium, wraz z sumą wartości
+przyznanych stypendiów, jeśli ta suma znajduje się w przedziale <0, 1500> a nazwisko nie
+zaczyna się na B
+
+SELECT nazwisko, SUM(kwota_stypendium) FROM studenci LEFT JOIN przyznane_stypendia ON przyznane_stypendia.id_studenta = studenci.id_studenta WHERE nazwisko NOT LIKE 'B%' GROUP BY nazwisko HAVING SUM(kwota_stypendium) BETWEEN 0 AND 1500
